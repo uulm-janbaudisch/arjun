@@ -347,9 +347,6 @@ void set_config(ArjunNS::Arjun* arj) {
 
 int main(int argc, char** argv) {
     arjun = new ArjunNS::Arjun;
-    #if defined(__GNUC__) && defined(__linux__)
-    feenableexcept(FE_INVALID   | FE_DIVBYZERO | FE_OVERFLOW);
-    #endif
 
     //Reconstruct the command line so we can emit it later if needed
     string command_line;
