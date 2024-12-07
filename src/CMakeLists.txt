@@ -58,8 +58,10 @@ target_link_libraries(arjun
     LINK_PUBLIC ${MPFR_LIBRARIES}
 )
 
-add_executable(arjun-bin main.cpp)
-add_executable(arjun-example example.cpp)
+if(BINARY)
+    add_executable(arjun-bin main.cpp)
+    add_executable(arjun-example example.cpp)
+endif()
 
 IF (ZLIB_FOUND)
     SET(arjun_bin_exec_link_libs ${arjun_bin_exec_link_libs} ${ZLIB_LIBRARY})
@@ -71,17 +73,19 @@ set_target_properties(arjun PROPERTIES
     SOVERSION ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
 
-set_target_properties(arjun-bin PROPERTIES
-    OUTPUT_NAME arjun
-    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
-    INSTALL_RPATH_USE_LINK_PATH TRUE)
+if(BINARY)
+    set_target_properties(arjun-bin PROPERTIES
+        OUTPUT_NAME arjun
+        RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
+        INSTALL_RPATH_USE_LINK_PATH TRUE)
 
-target_link_libraries(arjun-bin ${arjun_bin_exec_link_libs} arjun)
-set_target_properties(arjun-example PROPERTIES
-    OUTPUT_NAME example
-    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
-    INSTALL_RPATH_USE_LINK_PATH TRUE)
-target_link_libraries(arjun-example ${arjun_bin_exec_link_libs} arjun)
+    target_link_libraries(arjun-bin ${arjun_bin_exec_link_libs} arjun)
+    set_target_properties(arjun-example PROPERTIES
+        OUTPUT_NAME example
+        RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
+        INSTALL_RPATH_USE_LINK_PATH TRUE)
+    target_link_libraries(arjun-example ${arjun_bin_exec_link_libs} arjun)
+endif()
 
 arjun_add_public_header(arjun ${CMAKE_CURRENT_SOURCE_DIR}/arjun.h )
 
@@ -116,7 +120,9 @@ install(TARGETS arjun
     PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/arjun"
 )
 
-install(TARGETS arjun-bin
-    EXPORT ${ARJUN_EXPORT_NAME}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+if(BINARY)
+    install(TARGETS arjun-bin
+        EXPORT ${ARJUN_EXPORT_NAME}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+endif()
